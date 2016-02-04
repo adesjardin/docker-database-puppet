@@ -25,31 +25,22 @@ ADD puppet/manifests/site.pp /etc/puppet/
 WORKDIR /etc/puppet/
 RUN librarian-puppet install
 
-# upload software
-RUN mkdir /var/tmp/install
-RUN chmod 777 /var/tmp/install
-
-RUN mkdir /software
-
-COPY linuxamd64_12c_database_1of2.zip /software/
-COPY linuxamd64_12c_database_2of2.zip /software/
-
-RUN chmod -R 777 /software
-
-RUN puppet apply /etc/puppet/site.pp --verbose --detailed-exitcodes || [ $? -eq 2 ]
-
-EXPOSE 1521
-
 ADD startup.sh /
-RUN dos2unix -o /startup.sh
 RUN chmod 0755 /startup.sh
 
+# upload software
+#RUN mkdir /var/tmp/install
+#RUN chmod 777 /var/tmp/install
+#RUN mkdir /software
+#COPY linuxamd64_12c_database_1of2.zip /software/
+#COPY linuxamd64_12c_database_2of2.zip /software/
+#RUN chmod -R 777 /software
+#RUN puppet apply /etc/puppet/site.pp --verbose --detailed-exitcodes || [ $? -eq 2 ]
+#RUN rm -rf /software/*
+#RUN rm -rf /var/tmp/install/*
+#RUN rm -rf /var/tmp/*
+#RUN rm -rf /tmp/*
+
+EXPOSE 1521
 WORKDIR /
-
-# cleanup
-RUN rm -rf /software/*
-RUN rm -rf /var/tmp/install/*
-RUN rm -rf /var/tmp/*
-RUN rm -rf /tmp/*
-
 CMD bash -C '/startup.sh';'bash'

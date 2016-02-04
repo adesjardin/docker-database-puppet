@@ -53,10 +53,10 @@ class oradb_os {
 class oradb_12c {
   require oradb_os
 
-    oradb::installdb{ '12.1.0.1_Linux-x86-64':
-      version                   => '12.1.0.1',
-      file                      => 'linuxamd64_12c_database',
-      database_type             => 'SE',
+    oradb::installdb{ '12.1.0.2_Linux-x86-64':
+      version                   => '12.1.0.2',
+      file                      => 'linuxamd64_12102_database',
+      database_type             => 'EE',
       oracle_base               => '/oracle',
       oracle_home               => '/oracle/product/12.1/db',
       user_base_dir             => '/home',
@@ -76,7 +76,7 @@ class oradb_12c {
       user         => 'oracle',
       group        => 'dba',
       download_dir => "/var/tmp/install",
-      require      => Oradb::Installdb['12.1.0.1_Linux-x86-64'],
+      require      => Oradb::Installdb['12.1.0.2_Linux-x86-64'],
     }
 
     oradb::listener{'start listener':
@@ -96,15 +96,15 @@ class oradb_12c {
       group                     => 'dba',
       download_dir              => "/var/tmp/install",
       action                    => 'create',
-      db_name                   => 'orcl',
-      db_domain                 => 'example.com',
-      sys_password              => 'Welcome01',
-      system_password           => 'Welcome01',
+      db_name                   => 'soa',
+      db_domain                 => 'avioconsulting.com',
+      sys_password              => 'oracle',
+      system_password           => 'oracle',
       data_file_destination     => "/oracle/oradata",
       recovery_area_destination => "/oracle/flash_recovery_area",
       character_set             => "AL32UTF8",
       nationalcharacter_set     => "UTF8",
-      init_params               => "open_cursors=400,processes=200,job_queue_processes=2",
+      init_params               => "open_cursors=1000,processes=1000,sessions=1000,job_queue_processes=2",
       sample_schema             => 'TRUE',
       memory_percentage         => "40",
       memory_total              => "800",
@@ -124,7 +124,7 @@ class oradb_12c {
     oradb::autostartdatabase{ 'autostart oracle':
       oracle_home             => '/oracle/product/12.1/db',
       user                    => 'oracle',
-      db_name                 => 'soarepos',
+      db_name                 => 'soa',
       require                 => Oradb::Dbactions['start oraDb'],
     }
 
