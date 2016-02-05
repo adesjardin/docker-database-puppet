@@ -21,12 +21,21 @@ RUN yum clean all
 
 ADD puppet/Puppetfile /etc/puppet/
 ADD puppet/manifests/site.pp /etc/puppet/
+ADD puppet/manifests/site2.pp /etc/puppet/
 
 WORKDIR /etc/puppet/
 RUN librarian-puppet install
 
 ADD startup.sh /
 RUN chmod 0755 /startup.sh
+
+RUN yum -y install wget
+
+RUN mkdir -p /var/tmp/install && chmod 777 /var/tmp/install && mkdir /software &&\
+	wget -P /software https://product-installers.s3.amazonaws.com/oracle/db/12.1/linuxamd64_12102_database_1of2.zip &&\
+	wget -P /software https://product-installers.s3.amazonaws.com/oracle/db/12.1/linuxamd64_12102_database_2of2.zip  &&\
+	puppet apply /etc/puppet/site.pp --verbose
+#	rm -rf /software && rm -rf /var/tmp/install && rm -rf /tmp/*
 
 # upload software
 #RUN mkdir /var/tmp/install
@@ -43,4 +52,5 @@ RUN chmod 0755 /startup.sh
 
 EXPOSE 1521
 WORKDIR /
-CMD bash -C '/startup.sh';'bash'
+CMD /bin/bash
+#CMD bash -C '/startup.sh';'bash'
